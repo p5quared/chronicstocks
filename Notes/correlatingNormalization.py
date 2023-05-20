@@ -73,7 +73,7 @@ def sample_kl(num_samples: int):
             'Z-Score': min(all_q, key=lambda q: kl_divergence(p['NormZScore'], q['NormZScore'])),
             'dPrice': min(all_q, key=lambda q: kl_divergence(p['NormDPrice'], q['NormDPrice'])),
         }
-        best_matches = {k: v['Date'].iloc[0][-2:] for k, v in best_matches.items()}
+        best_matches = {k: int(v['Date'].iloc[0][-2:]) for k, v in best_matches.items()}
         results.loc[i] = best_matches
     return results
 
