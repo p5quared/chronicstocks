@@ -32,7 +32,7 @@
   );
 
   let slice_start = 3000;
-  let slice_size = 30;
+  let slice_size = 300;
 
   let data = {
     labels: Array(slice_size).fill(''),
@@ -55,6 +55,7 @@
        clearTimeout(update_timeout);
        update_timeout = setTimeout(() => {
            console.log("Updating chart...")
+           data.labels = Array(slice_size).fill('')
            data.datasets[0].data = closes.slice(slice_start, slice_start+ slice_size)
        }, update_pause)
    }
@@ -62,6 +63,7 @@
     const update = () => {
          console.log("Updating chart...")
          data.datasets[0].data = closes.slice(slice_start, slice_start+ slice_size)
+        data = {...data}
     }
 
 
