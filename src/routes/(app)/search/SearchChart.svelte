@@ -42,12 +42,27 @@
         fill: true,
         pointStyle: false,
         borderColor: 'rgb(256, 100, 100)',
-        tension: 0.05,
+        tension: 0,
         data: closes.slice(slice_start, slice_start+ slice_size),
       },
     ],
   };
 
+   const options = {
+       responsive: true,
+       scales: {
+           x: {
+               grid: {
+                   display: false,
+               }
+           },
+           y: {
+               grid: {
+                   display: false
+               }
+           },
+       }
+   }
    const update_pause = 500
    let update_timeout = null
    $: {
@@ -62,8 +77,9 @@
 
 </script>
 
-<div class="container">
-    <Line {data} options={{responsive: true}}/>
+
+<div class="container mx-auto">
+    <Line {data} {options} />
     <div>  <!--Settings-->
         <div class="">
             <h3>Start</h3>
