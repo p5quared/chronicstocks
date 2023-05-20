@@ -60,13 +60,6 @@
        }, update_pause)
    }
 
-    const update = () => {
-         console.log("Updating chart...")
-         data.datasets[0].data = closes.slice(slice_start, slice_start+ slice_size)
-        data = {...data}
-    }
-
-
 </script>
 
 <div class="container">
