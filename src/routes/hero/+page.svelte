@@ -1,11 +1,18 @@
 <script>
     export let data;
 
+    import { blur } from 'svelte/transition';
+    import { onMount } from 'svelte';
 
     console.log(data.visited);
+
+    let animate = false;
+    onMount( () => {
+        animate = true;
+    })
 </script>
 
-<div class="h-screen flex items-center">
+<div class="h-screen flex items-center" transition:blur={{intro: true}}>
     <div class="text-center mx-auto space-y-0.5">
         <h1 class="gradient-heading font-bold text-9xl">Deja-View</h1>
         <p>Find what <span class="italic">already was.</span></p>

@@ -1,3 +1,6 @@
+<svelte:head>
+    <title>Deja-View</title>
+</svelte:head>
 <script>
     // Your selected Skeleton theme:
     import '@skeletonlabs/skeleton/themes/theme-skeleton.css';

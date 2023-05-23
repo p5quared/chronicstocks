@@ -3,7 +3,7 @@
 </script>
 
 <AppBar>
-    <svelte:fragment slot="lead"><a href="/">Deja-View</a></svelte:fragment>
+    <svelte:fragment slot="lead"><a href="/" class="h1 font-bold gradient-heading">Deja-View</a></svelte:fragment>
     <svelte:fragment slot="trail">
         <LightSwitch/>
     </svelte:fragment>

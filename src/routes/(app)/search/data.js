@@ -7604,7 +7604,7 @@ const spy_csv = `Date,Open,High,Low,Close,Adj Close,Volume
 
 const closes = spy_csv.split('\n').slice(1).map((row) => {
     const [date, open, high, low, close, volume] = row.split(',')
-    return close;
+    return {date, close};
 
 });
 

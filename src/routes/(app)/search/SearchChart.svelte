@@ -1,7 +1,6 @@
 <script>
    console.time('load spy')
    import closes from './data.js'
-   console.log(closes)
    console.timeEnd('load spy')
 
    import {RangeSlider} from "@skeletonlabs/skeleton";
@@ -41,9 +40,9 @@
         label: 'SPY',
         fill: true,
         pointStyle: false,
-        borderColor: 'rgb(256, 100, 100)',
+        borderColor: '#0FBA81',
         tension: 0,
-        data: closes.slice(slice_start, slice_start+ slice_size),
+        data: closes.map(p => p.close).slice(slice_start, slice_start+ slice_size),
       },
     ],
   };
@@ -63,7 +62,7 @@
            },
        }
    }
-   const update_pause = 500
+   const update_pause = 100
    let update_timeout = null
    $: {
        console.log("New Data Requested...")
@@ -71,7 +70,7 @@
        update_timeout = setTimeout(() => {
            console.log("Updating chart...")
            data.labels = Array(slice_size).fill('')
-           data.datasets[0].data = closes.slice(slice_start, slice_start+ slice_size)
+           data.datasets[0].data = closes.map(p=> p.close).slice(slice_start, slice_start+ slice_size)
        }, update_pause)
    }
 
@@ -82,7 +81,7 @@
     <Line {data} {options} />
     <div>  <!--Settings-->
         <div class="">
-            <h3>Start</h3>
+            <h3>Start: {closes[0].date}</h3>
             <RangeSlider name="PeriodStart" bind:value={slice_start} min={0} max={closes.length - slice_size} step={10} />
         </div>
         <div class="">
@@ -92,7 +91,7 @@
     </div>
     <div>
         <a href="/search/{slice_start}/{slice_size}" class="justify-self-center">
-            <button class="btn variant-filled-surface">Search</button>
+            <button class="btn variant-filled-primary">Search</button>
         </a>
     </div>
 </div>
