@@ -40,6 +40,7 @@
                 tension: 0
             }
         ]
+    // TODO: Dynamic coloring so we don't have to forceOverride
     for(let i=0; i<q.length; i++){
         chartData.push({
             label: 'Q'+(i+1).toString(),
@@ -62,7 +63,7 @@
     const options = {
         plugins: {
             colors: {
-                enabled: true,
+                forceOverride: true,
             }
         }
     }
