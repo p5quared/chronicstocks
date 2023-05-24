@@ -81,7 +81,7 @@
     <Line {data} {options} />
     <div>  <!--Settings-->
         <div class="">
-            <h3>Start: {closes[0].date}</h3>
+            <h3>Start: {closes[slice_start].date}</h3>
             <RangeSlider name="PeriodStart" bind:value={slice_start} min={0} max={closes.length - slice_size} step={10} />
         </div>
         <div class="">
