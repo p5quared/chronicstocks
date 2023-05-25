@@ -1,5 +1,5 @@
 <svelte:head>
-    <title>Deja-View</title>
+    <title>Chronic Stocks</title>
 </svelte:head>
 <script>
     // Your selected Skeleton theme:
