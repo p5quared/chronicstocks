@@ -1,4 +1,6 @@
 <script>
+    // TODO: Add URLS to each line or use drawers
+    // TODO: Animate Chart Drawing
     export let p;
     export let q;
 
@@ -46,7 +48,7 @@
             label: 'Q'+(i+1).toString(),
             data: q[i],
             fill: false,
-            borderWidth: 2,
+            borderWidth: 3,
             pointStyle: false,
             borderDash: [9, 3],
             tension: 0
@@ -69,5 +71,4 @@
     }
 </script>
 
-<h1>Result Chart</h1>
 <Line {data} {options}  />

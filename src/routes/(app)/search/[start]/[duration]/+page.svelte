@@ -17,5 +17,7 @@
     console.log('q', q)
 </script>
 
-<h1>Results:</h1>
 <ResultChart {p} {q}/>
+<a href="/search">
+    <button class="btn variant-filled-primary">New Search</button>
+</a>

@@ -30,6 +30,7 @@
     CategoryScale
   );
 
+  // TODO: Store state so that we can go back to the same chart
   let slice_start = 3000;
   let slice_size = 300;
 
@@ -77,21 +78,21 @@
 </script>
 
 
-<div class="container mx-auto">
-    <Line {data} {options} />
-    <div>  <!--Settings-->
-        <div class="">
-            <h3>Start: {closes[slice_start].date}</h3>
-            <RangeSlider name="PeriodStart" bind:value={slice_start} min={0} max={closes.length - slice_size} step={10} />
+<div class="w-screen max-h-full mx-auto xl:mx-0 xl:flex my-auto">
+    <Line {data} {options} class="container"/>
+    <div class="bg-surface-900 border border-primary-400 rounded p-8  w-full h-fit flex-1">  <!--Settings-->
+        <h2 class="text-primary-400">Settings</h2>
+        <div class="mt-2"> <!--Selectors-->
+            <h4>Start: {closes[slice_start].date}</h4>
+            <RangeSlider name="PeriodStart" accent="accent-primary-900" bind:value={slice_start} min={0} max={closes.length - slice_size} step={10} />
         </div>
-        <div class="">
-            <h3>Duration: {slice_size} Days</h3>
+        <div class="block">
+            <h4>Duration (days): </h4>
+            <input class="input lg:w-[40%] w-[50%]" type="number" bind:value={slice_size} />
             <RangeSlider name="PeriodSize" bind:value={slice_size} min={10} max={365} step={1} />
         </div>
-    </div>
-    <div>
         <a href="/search/{slice_start}/{slice_size}" class="justify-self-center">
-            <button class="btn variant-filled-primary">Search</button>
+            <button class="btn variant-filled-primary font-bold my-4">Search</button>
         </a>
     </div>
 </div>
