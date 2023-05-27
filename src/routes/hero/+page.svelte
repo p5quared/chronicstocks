@@ -15,7 +15,7 @@
 <div class="h-screen flex items-center" transition:blur={{intro: true}}>
     <div class="text-center mx-auto space-y-0.5">
         <h1 class="gradient-heading font-bold text-9xl">Chronic Stocks</h1>
-        <p>Find what was and what will be, <br><span class="italic">tomorrow and tomorrow and tomorrow and.</span></p>
+        <p>Find what was and what will be... <br><span class="italic">tomorrow and tomorrow and tomorrow and.</span></p>
         <a href="/">
             <div class="btn variant-filled-tertiary mt-4 animate-pulse">
                 <p>Enter</p>
