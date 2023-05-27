@@ -17,9 +17,9 @@ import NavBar from './NavBar.svelte';
     console.log("First Visit?:", !data.visited)
 </script>
 
-<AppShell>
+<AppShell class='flex flex-col'>
     <svelte:fragment slot="header">
         <NavBar/>
     </svelte:fragment>
-    <slot/>
+    <slot class='flex-1'/>
 </AppShell>

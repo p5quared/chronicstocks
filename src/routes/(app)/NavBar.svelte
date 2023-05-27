@@ -3,7 +3,7 @@
 </script>
 
 <AppBar class="shadow">
-    <svelte:fragment slot="lead"><a href="/" class="h1 font-bold gradient-heading">Chronic Stocks</a></svelte:fragment>
+    <svelte:fragment slot="lead"><a href="/" class="font-bold gradient-heading"><h2>Chronic Stocks</h2></a></svelte:fragment>
     <svelte:fragment slot="trail">
         <LightSwitch/>
     </svelte:fragment>

@@ -1,6 +1,6 @@
 {
-	"name": "dejavu",
-	"version": "0.0.1",
+	"name": "chronicstocks",
+	"version": "0.2.0",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
@@ -36,6 +36,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@floating-ui/dom": "^1.2.8",
 		"@sveltejs/adapter-vercel": "^2.4.1",
 		"chart.js": "^4.3.0",
 		"svelte-chartjs": "^3.1.2"
