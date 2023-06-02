@@ -1,20 +1,8 @@
 <script>
-	import dataLoader from 'lib/loadData.js';
-	import getCSV from 'lib/getCSV.js';
-
-
-
-	import {onMount} from 'svelte';
-
-	console.time('load spy')
-	onMount(async () => {
-		let spy = getCSV('SPY')
-
-		console.log(spy)
-	})
-	import closes from './data.js'
-	console.timeEnd('load spy')
-
+	// TODO: Since the state is now in the store, we should be able to refactor out the settings from the chart
+	import { searchSettings } from 'lib/stores.js';
+	export let data
+	let {visited, searchData} = data
 	import { Autocomplete, InputChip, RangeSlider, popup } from '@skeletonlabs/skeleton';
 
 	import { Line } from "svelte-chartjs";
@@ -30,6 +18,7 @@
 		PointElement,
 		CategoryScale,
 	} from 'chart.js';
+	import { get } from 'svelte/store';
 
 	ChartJS.register(
 		Title,
@@ -42,11 +31,20 @@
 		CategoryScale
 	);
 
-	// TODO: Store state so that we can go back to the same chart
-	let slice_start = 3000;
-	let slice_size = 300;
+	let slice_start = $searchSettings.start;
+	let slice_size = $searchSettings.duration;
+	console.log("Slice Start and Size: ")
+	console.table([slice_start, slice_size])
 
-	let data = {
+	$: { // synchronize store
+		$searchSettings.start = slice_start
+		$searchSettings.startDate = searchData[slice_start].date
+		$searchSettings.duration = slice_size
+		console.log("searchSettings Updated:")
+		console.log($searchSettings)
+	}
+
+	let chartData = {
 		labels: Array(slice_size).fill(''),
 		datasets: [
 			{
@@ -55,7 +53,7 @@
 				pointStyle: false,
 				borderColor: '#0FBA81',
 				tension: 0,
-				data: closes.map(p => p.close).slice(slice_start, slice_start+ slice_size),
+				data: searchData.map(p => p.close).slice(slice_start, slice_start+ slice_size),
 			},
 		],
 	};
@@ -77,27 +75,30 @@
 	}
 	const update_pause = 100
 	let update_timeout = null
+	// Update Data
 	$: {
-		console.log("New Data Requested...")
+		console.log("New chart slice requested...")
 		clearTimeout(update_timeout);
 		update_timeout = setTimeout(() => {
 			console.log("Updating chart...")
-			data.labels = Array(slice_size).fill('')
-			data.datasets[0].data = closes.map(p=> p.close).slice(slice_start, slice_start+ slice_size)
+			chartData.labels = Array(slice_size).fill('')
+			chartData.datasets[0].data = searchData.map(p=> p.close).slice(slice_start, slice_start+ slice_size)
 		}, update_pause)
 	}
 
 	// This is the compare from string
-	let searchFrom = "SPY"
-	// This coressponds to the chip list
+	let searchFrom = $searchSettings.searchFrom
+	// This corresponds to the chip list
 	let searchWithinInput = ""
 
 	function onSearchFromSelect(event){
+		$searchSettings.searchFrom = event.detail.value
 		searchFrom = event.detail.value
 	}
 
 	function onSearchWithinChipSelect(event){
 		searchWithinChipList = [...searchWithinChipList, event.detail.value]
+		$searchSettings.searchIn = searchWithinChipList
 		searchWithinInput = ""
 	}
 
@@ -116,18 +117,15 @@
 
 	let searchWithinChipList = ["SPY"]
 	const searchWithinOptions = searchFromOptions.map(o => o.value)
-	const searchWithinPopupOptions = {
-		event: 'focus-click',
-		target: 'searchWithinPopupAutocomplete',
-		placement: 'bottom'
-	}
 
 
+	let searchInParam = searchSettings.searchIn
+	console.log("Search In Param: " + searchInParam)
 </script>
 
 
 <div class="w-screen max-h-full mx-auto xl:mx-0 xl:flex my-auto">
-	<Line {data} {options} class="container"/>
+	<Line data={chartData} {options} class="container"/>
 	<!--Settings-->
 	<div class="bg-surface-900 xl:border border-primary-400 rounded xl:m-2 p-8  w-full h-fit max-h-full flex-1">
 		<h2 class="text-primary-400 mb-2">Settings</h2>
@@ -141,12 +139,12 @@
 			</div>
 		</div>
 		<div class="mt-2"> <!--Time-Slicer-->
-			<h4>Start: {closes[slice_start].date}</h4>
+			<h4>Start: {searchData[slice_start].date}</h4>
 			<RangeSlider name="PeriodStart"
 									 accent="accent-primary-900"
 									 bind:value={slice_start}
 									 min={0}
-									 max={closes.length - slice_size}
+									 max={searchData.length - slice_size}
 									 step={10} />
 		</div>
 		<div class="inline">
@@ -172,7 +170,10 @@
 											on:selection={onSearchWithinChipSelect}/>
 			</div>
 		</div>
-		<a href="/search/{slice_start}/{slice_size}" class="justify-self-center">
+		<a href="/results?start={$searchSettings.start}
+		&duration={$searchSettings.duration}
+		&from={$searchSettings.searchFrom}
+		&in={$searchSettings.searchIn.join('&in=')}" class="justify-self-center">
 			<button class="btn variant-filled-primary font-bold my-4">Search</button>
 		</a>
 	</div>

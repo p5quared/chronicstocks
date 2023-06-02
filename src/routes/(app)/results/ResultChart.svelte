@@ -3,6 +3,7 @@
     // TODO: Animate Chart Drawing
     export let p;
     export let q;
+		console.log("Q in chart", q)
 
     import { Line } from "svelte-chartjs";
 
@@ -33,8 +34,8 @@
 
     let chartData = [
             {
-                label: 'Sample',
-                data: p,
+                label: p.name + " " + p.date.toDateString() + " (Target)",
+                data: p.data,
                 fill: false,
                 borderWidth: 5,
                 pointStyle: false,
@@ -45,8 +46,8 @@
     // TODO: Dynamic coloring so we don't have to forceOverride
     for(let i=0; i<q.length; i++){
         chartData.push({
-            label: 'Q'+(i+1).toString(),
-            data: q[i],
+            label: q[i].name + " " + q[i].date.toDateString(),
+            data: q[i].data,
             fill: false,
             borderWidth: 3,
             pointStyle: false,
@@ -57,7 +58,7 @@
 
 
     let data = {
-        labels: Array(p.length).fill(''),
+        labels: Array(p.data.length).fill(''),
         datasets: chartData
 
     }
