@@ -3,10 +3,15 @@
 	import { searchSettings } from 'lib/stores.js';
 	export let data
 	let {visited, searchData} = data
-	import { Autocomplete, InputChip, RangeSlider, popup } from '@skeletonlabs/skeleton';
+	import { Autocomplete, InputChip, RangeSlider} from '@skeletonlabs/skeleton';
 
 	import { Line } from "svelte-chartjs";
 
+	$: {
+		if(searchFromOptions.find((opt) => opt.value === searchFrom)){
+			$searchSettings.searchFrom = searchFrom
+		}
+	}
 	import {
 		Chart as ChartJS,
 		Title,
@@ -36,12 +41,13 @@
 	console.log("Slice Start and Size: ")
 	console.table([slice_start, slice_size])
 
+
 	$: { // synchronize store
 		$searchSettings.start = slice_start
 		$searchSettings.startDate = searchData[slice_start].date
 		$searchSettings.duration = slice_size
 		console.log("searchSettings Updated:")
-		console.log($searchSettings)
+		console.table($searchSettings)
 	}
 
 	let chartData = {
@@ -98,7 +104,6 @@
 
 	function onSearchWithinChipSelect(event){
 		searchWithinChipList = [...searchWithinChipList, event.detail.value]
-		$searchSettings.searchIn = searchWithinChipList
 		searchWithinInput = ""
 	}
 
@@ -116,6 +121,7 @@
 	]
 
 	let searchWithinChipList = ["SPY"]
+	$: $searchSettings.searchIn = searchWithinChipList
 	const searchWithinOptions = searchFromOptions.map(o => o.value)
 
 
@@ -124,10 +130,10 @@
 </script>
 
 
-<div class="w-screen max-h-full mx-auto xl:mx-0 xl:flex my-auto">
-	<Line data={chartData} {options} class="container"/>
+<div class="block mx-auto xl:container xl:flex xl:my-12">
+	<Line data={chartData} {options} class="max-h-full min-w-0"/>
 	<!--Settings-->
-	<div class="bg-surface-900 xl:border border-primary-400 rounded xl:m-2 p-8  w-full h-fit max-h-full flex-1">
+	<div class="bg-surface-900 border border-primary-400 xl:rounded p-8 xl:m-4 min-w-fit w-full overflow-y-scroll flex-1">
 		<h2 class="text-primary-400 mb-2">Settings</h2>
 		<div class='mb-2'> <!--FROM Chart Select-->
 			<h4 class='mb-0.5'>Compare From:</h4>
@@ -156,12 +162,13 @@
 									 max={365}
 									 step={1} />
 		</div>
-		<div>
+		<div class='max-w-full'>
 			<h4>Search Within</h4>
 			<InputChip name="SearchWithin"
 								 bind:input={searchWithinInput}
 								 bind:value={searchWithinChipList}
 								 whitelist={searchFromOptions}
+								 minlength={1}
 								 allowUpperCase />
 			<div class='card w-full max-w-sm max-h-40 overflow-y-auto'>
 				<Autocomplete bind:input={searchWithinInput}
@@ -170,7 +177,8 @@
 											on:selection={onSearchWithinChipSelect}/>
 			</div>
 		</div>
-		<a href="/results?start={$searchSettings.start}
+		<a href="/results?
+		start={$searchSettings.start}
 		&duration={$searchSettings.duration}
 		&from={$searchSettings.searchFrom}
 		&in={$searchSettings.searchIn.join('&in=')}" class="justify-self-center">
