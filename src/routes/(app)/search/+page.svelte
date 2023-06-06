@@ -1,29 +1,71 @@
 <script>
 	// TODO: Since the state is now in the store, we should be able to refactor out the settings from the chart
+	// AND try to use just the store, no need for in between variables
+	// TODO: Figure out better way to store search data options
 	import { searchSettings } from 'lib/stores.js';
+	import { Autocomplete, InputChip, RangeSlider } from '@skeletonlabs/skeleton';
+
+	import { Line } from 'svelte-chartjs';
+	import {
+		CategoryScale,
+		Chart as ChartJS,
+		Filler,
+		Legend,
+		LinearScale,
+		LineElement,
+		PointElement,
+		Title,
+		Tooltip
+	} from 'chart.js';
+
 	export let data
 	let {visited, searchData} = data
-	import { Autocomplete, InputChip, RangeSlider} from '@skeletonlabs/skeleton';
 
-	import { Line } from "svelte-chartjs";
-
-	$: {
-		if(searchFromOptions.find((opt) => opt.value === searchFrom)){
-			$searchSettings.searchFrom = searchFrom
-		}
+	const randomSlice = (data) => {
+		slice_start = Math.floor(Math.random() * (data.length - slice_size))
+		slice_size = Math.floor(Math.random() * (80))
 	}
-	import {
-		Chart as ChartJS,
-		Title,
-		Tooltip,
-		Legend,
-		LineElement,
-		Filler,
-		LinearScale,
-		PointElement,
-		CategoryScale,
-	} from 'chart.js';
-	import { get } from 'svelte/store';
+async	function fetchNewChart(csvName){
+		console.log("Fetching new chart data...")
+		const freshData =
+			await fetch(`/data/${csvName}.csv`).then(r => r.text())
+			.then(data => {
+				return data.split("\n")
+					.slice(1)
+					.map(row => {
+						const [date, open, high, low, close, volume] = row.split(',')
+						return {date, close}
+					})
+			})
+			.then(data => {
+				randomSlice(data)
+				searchData = data
+			})
+
+		console.log("New chart data fetched!")
+		console.log(freshData)
+	}
+
+	// Avoid eager fetch
+	let notIniitalLoad = false
+	$: {
+		// TODO: search for alternative to this technique to avoid eager fetch
+		console.log("Conditions:")
+		console.table({
+			"searchFrom": $searchSettings.searchFrom,
+			"searchFromOptions.find": searchFromOptions.find((opt) => opt.value === searchFrom) !== undefined,
+			"notInitialLoad": notIniitalLoad
+		})
+		if(searchFromOptions.find((opt) => opt.value === searchFrom) !== undefined && notIniitalLoad){
+			console.log("Search from modified: ", $searchSettings.searchFrom, "->" , searchFrom)
+			$searchSettings.searchFrom = searchFrom
+			console.log("Fetching new chart data...(outside)")
+			fetchNewChart(searchFrom)
+		}
+		notIniitalLoad = true
+	}
+
+
 
 	ChartJS.register(
 		Title,
@@ -38,16 +80,18 @@
 
 	let slice_start = $searchSettings.start;
 	let slice_size = $searchSettings.duration;
-	console.log("Slice Start and Size: ")
-	console.table([slice_start, slice_size])
+	// console.log("Slice Start and Size: ")
+	// console.table([slice_start, slice_size])
 
 
 	$: { // synchronize store
+		console.log("Updating searchSettings...")
+		console.log(searchData)
 		$searchSettings.start = slice_start
 		$searchSettings.startDate = searchData[slice_start].date
 		$searchSettings.duration = slice_size
-		console.log("searchSettings Updated:")
-		console.table($searchSettings)
+		// console.log("searchSettings Updated:")
+		// console.table($searchSettings)
 	}
 
 	let chartData = {
@@ -81,12 +125,12 @@
 	}
 	const update_pause = 100
 	let update_timeout = null
-	// Update Data
+	// Update Data slice
 	$: {
-		console.log("New chart slice requested...")
+		// console.log("New chart slice requested...")
 		clearTimeout(update_timeout);
 		update_timeout = setTimeout(() => {
-			console.log("Updating chart...")
+			// console.log("Updating chart...")
 			chartData.labels = Array(slice_size).fill('')
 			chartData.datasets[0].data = searchData.map(p=> p.close).slice(slice_start, slice_start+ slice_size)
 		}, update_pause)
@@ -113,11 +157,8 @@
 		{label: "AAPL - Apple", value: "AAPL", keywords: 'aapl, apple, iphone, macbook, mac'},
 		{label: "AMZN - Amazon", value: "AMZN", keywords: 'amzn, amazon, kindle, alexa'},
 		{label: "MSFT - Microsoft", value: "MSFT", keywords: 'msft, microsoft, windows, xbox'},
-		{label: "GOOG - Google", value: "GOOG", keywords: 'goog, google, android, pixel'},
-		{label: "FB - Facebook", value: "FB", keywords: 'fb, facebook, instagram, whatsapp'},
 		{label: "TSLA - Tesla", value: "TSLA", keywords: 'tsla, tesla, model s, model 3, model x, model y, cybertruck'},
 		{label: "NVDA - Nvidia", value: "NVDA", keywords: 'nvda, nvidia, geforce, rtx, quadro'},
-		{label: "PYPL - PayPal", value: "PYPL", keywords: 'pypl, paypal, venmo'},
 	]
 
 	let searchWithinChipList = ["SPY"]
@@ -126,7 +167,7 @@
 
 
 	let searchInParam = searchSettings.searchIn
-	console.log("Search In Param: " + searchInParam)
+	// console.log("Search In Param: " + searchInParam)
 </script>
 
 
@@ -162,7 +203,7 @@
 									 max={365}
 									 step={1} />
 		</div>
-		<div class='max-w-full'>
+		<div class='max-w-xs'>
 			<h4>Search Within</h4>
 			<InputChip name="SearchWithin"
 								 bind:input={searchWithinInput}
@@ -170,7 +211,7 @@
 								 whitelist={searchFromOptions}
 								 minlength={1}
 								 allowUpperCase />
-			<div class='card w-full max-w-sm max-h-40 overflow-y-auto'>
+			<div class='card w-full max-h-40 overflow-y-auto'>
 				<Autocomplete bind:input={searchWithinInput}
 											options={searchFromOptions}
 											denylist={searchWithinChipList}
