@@ -23,7 +23,7 @@
 
 	const randomSlice = (data) => {
 		slice_start = Math.floor(Math.random() * (data.length - slice_size))
-		slice_size = Math.floor(Math.random() * (80))
+		slice_size = Math.floor(Math.random() * (80)) + 5
 	}
 async	function fetchNewChart(csvName){
 		console.log("Fetching new chart data...")
