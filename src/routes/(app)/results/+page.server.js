@@ -6,7 +6,6 @@ export async function load({fetch, params, url}){
   const start= +url.searchParams.get('start')
   const duration = +url.searchParams.get('duration')
 
-  // TODO: Refactor: this could all be one fetch and just pass by index to search
   let q_periods = []
   for(let i = 0; i < searchIn.length; i++){
     const stock = searchIn[i]
