@@ -21,5 +21,5 @@ import NavBar from './NavBar.svelte';
     <svelte:fragment slot="header">
         <NavBar/>
     </svelte:fragment>
-    <slot class='flex-1'/>
+    <slot />
 </AppShell>

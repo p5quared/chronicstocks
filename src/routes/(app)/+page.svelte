@@ -27,56 +27,59 @@
 
     function* tripleTickGenerator(){
         let main_ticker = 1;
-        let secondary1 = main_ticker + 0.25
-        let secondary2 = main_ticker - 0.25
+        let secondary1 = main_ticker + 0.001
+        let secondary2 = main_ticker - 0.001
         while(true){
-            main_ticker += Math.random()
-            main_ticker -= Math.random()
+            main_ticker += Math.random() * 0.2
+            main_ticker -= Math.random() * 0.2
             secondary1 = main_ticker
-            secondary1 += Math.random()
-            secondary1 -= Math.random()
+            secondary1 += Math.random() * 0.2
+            secondary1 -= Math.random() * 0.2
             secondary2 = main_ticker
-            secondary2 += Math.random()
-            secondary2 -= Math.random()
+            secondary2 -= Math.random() * 0.2
             yield [main_ticker, secondary1, secondary2];
         }
     }
+    let ticker = tripleTickGenerator()
+
+    const DRAWN_TICKS = 100
+    const BLANK_TICKS = DRAWN_TICKS * .25
+    const TICK_RATE = 200
 
     let generatedTicks = []
-    let ticker = tripleTickGenerator()
-    for(let i = 0; i < 40; i++){
+    for(let i = 0; i < DRAWN_TICKS; i++){
         generatedTicks.push(ticker.next().value)
     }
-    for(let i = 0; i < 10; i++){
+    for(let i = 0; i < BLANK_TICKS; i++){
         generatedTicks.push(0)
     }
     let data
 
     $: data = {
-        labels: generatedTicks.map((tick) => ""),
+        labels: generatedTicks.map(() => ""),
         datasets: [
             {
-                label: 'My First dataset',
+                label: 'P',
                 data: generatedTicks.map((tick) => tick[0]),
                 fill: false,
                 borderColor:'#0FBA81',
-                tension: 0.1,
+                tension: 0,
                 pointStyle: false,
             },
             {
-                label: 'My Second dataset',
+                label: 'Q1',
                 data: generatedTicks.map((tick) => tick[1]),
                 fill: false,
-                borderColor: 'rgba(212,25,118,0.34)',
-                tension: 0.1,
+                borderColor: 'rgba(85,195,255,0.2)',
+                tension: 0.4,
                 pointStyle: false,
             },
             {
-                label: 'My Third dataset',
+                label: 'Q2',
                 data: generatedTicks.map((tick) => tick[2]),
                 fill: false,
-                borderColor: 'rgba(234,179,8,0.28)',
-                tension: 0.1,
+                borderColor: 'rgba(245,0,0,0.2)',
+                tension: 0.4,
                 pointStyle: false,
             }
         ]
@@ -110,16 +113,15 @@
         },
     }
     const updateChartData = () => {
-        generatedTicks = generatedTicks.slice(0, 40)
-        generatedTicks.shift()
+        generatedTicks = generatedTicks.slice(1, DRAWN_TICKS)
         generatedTicks.push(ticker.next().value)
-        for(let i = 0; i < 10; i++){
+        for(let i = 0; i < BLANK_TICKS; i++){
             generatedTicks.push(0)
         }
         console.log("Updating...")
     }
 
-    const updateChartInterval = setInterval(updateChartData, 400)
+    const updateChartInterval = setInterval(updateChartData, TICK_RATE)
     onDestroy(() => {
         clearInterval(updateChartInterval)
     })

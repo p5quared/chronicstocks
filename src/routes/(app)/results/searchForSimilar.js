@@ -29,8 +29,6 @@ searchData = {
      */
     // Get the target period, and comparable periods of equal duration, and normalize n/sum
     let {p, q} = searchData
-    console.log("SEARCHING FOR DATA FOR", p.name, "FROM", p.data[0].date, "FOR", duration, "DAYS")
-    console.log("SEARCHING IN:", q.map((stock) => stock.name))
     let target_slice = p.data.slice(start, start + duration)
     let target_period = target_slice.map((value) => value.close / target_slice.reduce((a, b) => a + b.close, 0))
     const target_p_returnable = {name: p.name,

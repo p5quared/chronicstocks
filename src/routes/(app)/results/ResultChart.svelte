@@ -3,7 +3,8 @@
     // TODO: Animate Chart Drawing
     export let p;
     export let q;
-		console.log("Q in chart", q)
+		export let index;
+		console.log("Index: " + index)
 
     import { Line } from "svelte-chartjs";
 
@@ -51,10 +52,15 @@
             fill: false,
             borderWidth: 3,
             pointStyle: false,
+					borderColor: 'gray',
             borderDash: [9, 3],
             tension: 0
         })
     }
+
+		if(index !== -1){
+			chartData[index + 1].borderColor = '#FF0000'
+		}
 
 
     let data = {
@@ -63,13 +69,33 @@
 
     }
 
-    const options = {
-        plugins: {
-            colors: {
-                forceOverride: true,
-            }
-        }
-    }
+		const options = {
+			spanGaps: false,
+			animations: false,
+			scales:{
+				x: {
+					grid: {
+						display: false
+					},
+					ticks: {
+						display: false
+					}
+				},
+				y: {
+					grid: {
+						display: false,
+					},
+					ticks: {
+						display: false
+					}
+				}
+			},
+			plugins: {
+				legend: {
+					display: false
+				}
+			},
+		}
 </script>
 
 <Line {data} {options}  />

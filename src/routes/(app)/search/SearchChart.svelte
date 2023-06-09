@@ -30,7 +30,6 @@
     CategoryScale
   );
 
-  // TODO: Store state so that we can go back to the same chart
   let slice_start = 3000;
   let slice_size = 300;
 

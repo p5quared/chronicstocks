@@ -168,10 +168,12 @@ async	function fetchNewChart(csvName){
 
 	let searchInParam = searchSettings.searchIn
 	// console.log("Search In Param: " + searchInParam)
+	// TODO: Reformat by wrapping Line in div
 </script>
 
 
-<div class="block mx-auto xl:container xl:flex xl:my-12">
+<div class="block mx-auto xl:container xl:flex xl:py-12">
+
 	<Line data={chartData} {options} class="max-h-full min-w-0"/>
 	<!--Settings-->
 	<div class="bg-surface-900 border border-primary-400 xl:rounded p-8 xl:m-4 min-w-fit w-full overflow-y-scroll flex-1">
