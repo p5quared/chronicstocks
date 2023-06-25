@@ -1,4 +1,4 @@
-import {searchForSimilarSS} from './searchForSimilar.js';
+import {searchForSimilar} from './searchForSimilar.js';
 
 export async function load({fetch, params, url}){
   const searchIn = url.searchParams.getAll('in')
@@ -43,7 +43,7 @@ export async function load({fetch, params, url}){
     })
 
   const allData = {p: p_period, q: q_periods}
-  const results = searchForSimilarSS({p: p_period, q: q_periods}, start, duration)
+  const results = searchForSimilar({p: p_period, q: q_periods}, start, duration)
   console.log("results on server:", results)
 
   return results
