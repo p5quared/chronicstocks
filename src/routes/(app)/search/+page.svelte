@@ -172,11 +172,13 @@ async	function fetchNewChart(csvName){
 </script>
 
 
-<div class="block mx-auto xl:container xl:flex xl:py-12">
-
-	<Line data={chartData} {options} class="max-h-full min-w-0"/>
+<div class="container mx-auto lg:py-8 lg:flex lg:gap-4">
+	<div class='h-full lg:w-3/4 border rounded border-primary-500 bg-surface-900/50'>
+		<Line data={chartData} {options} class='min-h-0 min-w-0' />
+	</div>
 	<!--Settings-->
-	<div class="bg-surface-900 border border-primary-400 xl:rounded p-8 xl:m-4 min-w-fit w-full overflow-y-scroll flex-1">
+	<div class="bg-surface-900 border border-primary-400 w-full xl:rounded p-8 flex-1
+                flex flex-col gap-4 max-h-full">
 		<h2 class="text-primary-400 mb-2">Settings</h2>
 		<div class='mb-2'> <!--FROM Chart Select-->
 			<h4 class='mb-0.5'>Compare From:</h4>
