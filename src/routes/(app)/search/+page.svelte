@@ -65,8 +65,6 @@ async	function fetchNewChart(csvName){
 		notIniitalLoad = true
 	}
 
-
-
 	ChartJS.register(
 		Title,
 		Tooltip,
