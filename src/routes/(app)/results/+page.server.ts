@@ -1,12 +1,13 @@
+import type { PageServerLoad } from "./$types";
 import {searchForSimilar} from './searchForSimilar.js';
 
-export async function load({fetch, params, url}){
+export const load = ( async ({fetch, url}) => {
   const searchIn = url.searchParams.getAll('in')
   const searchFrom = url.searchParams.get('from')
-  const start= +url.searchParams.get('start')
-  const duration = +url.searchParams.get('duration')
+  const start = Number(url.searchParams.get('start'))
+  const duration = Number(url.searchParams.get('duration'))
 
-  let q_periods = []
+  const q_periods = []
   for(let i = 0; i < searchIn.length; i++){
     const stock = searchIn[i]
     console.log("Fetching", stock)
@@ -29,8 +30,8 @@ export async function load({fetch, params, url}){
 
   const p_period = await fetch(`/data/${searchFrom}.csv`)
     .then(r => r.text())
-    .then(data => {
-      data = data.split("\n")
+    .then(data_raw => {
+    const data =  data_raw.split("\n")
         .slice(1)
         .map(row => {
           const [date, open, high, low, close, volume] = row.split(',')
@@ -42,9 +43,8 @@ export async function load({fetch, params, url}){
       console.log(err)
     })
 
-  const allData = {p: p_period, q: q_periods}
   const results = searchForSimilar({p: p_period, q: q_periods}, start, duration)
   console.log("results on server:", results)
 
   return results
-}
+}) satisfies PageServerLoad;

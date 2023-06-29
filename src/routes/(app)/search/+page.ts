@@ -1,18 +1,19 @@
+import type { PageLoad } from './$types';
 import {searchSettings} from 'lib/stores.js';
 import { get } from 'svelte/store';
 
-export async function load({fetch}) {
+export const load = ( async  ({fetch}) => {
 	const stock = get(searchSettings).searchFrom
 	const searchData = await fetch(`/data/${stock}.csv`).then(r => r.text())
 		.then(data => {
-			data = data.split("\n")
+			const formatted =  data.split("\n")
 				.slice(1)
 				.map(row => {
 					const [date, open, high, low, close, volume] = row.split(',')
 					return {date, close}
 				})
-			return data
+			return formatted
 		})
 
 	return {searchData}
-}
+}) satisfies PageLoad;

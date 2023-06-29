@@ -1,7 +1,8 @@
-<script>
-    export let data
-    const {p, q} = data
-    import ResultChart from "./ResultChart.svelte";
+<script lang='ts'>
+import type { PageData } from "../$types";
+export let data: PageData
+const {p, q} = data
+import ResultChart from "./ResultChart.svelte";
 
     let index = -1
 

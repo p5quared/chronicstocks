@@ -1,5 +1,6 @@
-<script>
-    export let data;
+<script lang='ts'>
+import type { PageData } from './$types';
+    export let data: PageData;
 
     import { blur } from 'svelte/transition';
     import { onMount } from 'svelte';

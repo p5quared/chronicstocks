@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+import type { PageData } from './$types';
 	// Your selected Skeleton theme:
 import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
 
@@ -11,8 +12,7 @@ import '../../app.postcss';
 import { AppShell } from '@skeletonlabs/skeleton';
 import NavBar from './NavBar.svelte';
 
-    /** @type {import('./$types').PageData} */
-    export let data;
+    export let data: PageData;
 
     console.log("First Visit?:", !data.visited)
 </script>
