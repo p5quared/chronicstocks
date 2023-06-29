@@ -11,7 +11,7 @@
         PointElement,
         CategoryScale,
         Colors
-    } from 'chart.js';
+    } from "chart.js";
     import { onDestroy } from 'svelte';
     ChartJS.register(
       Title,

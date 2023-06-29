@@ -15,7 +15,7 @@ const config = {
 		adapter: adapter(),
 		alias : {
 			'lib' : 'src/lib'
-		}
+		},
 	}
 };
 export default config;
