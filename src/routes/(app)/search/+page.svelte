@@ -1,9 +1,10 @@
-<script>
+<script lang="ts">
+	import type { PageData } from '../$types.js';
 	// TODO: Since the state is now in the store, we should be able to refactor out the settings from the chart
 	// AND try to use just the store, no need for in between variables
 	// TODO: Figure out better way to store search data options
 	import { searchSettings } from 'lib/stores.js';
-	import { Autocomplete, InputChip, RangeSlider } from '@skeletonlabs/skeleton';
+	import { Autocomplete, InputChip, RangeSlider, type AutocompleteOption } from '@skeletonlabs/skeleton';
 
 	import { Line } from 'svelte-chartjs';
 	import {
@@ -18,32 +19,32 @@
 		Tooltip
 	} from 'chart.js';
 
-	export let data
+	export let data: PageData
 	let {visited, searchData} = data
 
-	const randomSlice = (data) => {
+	const randomSlice = (data: {date: string, close: string }[]) => {
 		slice_start = Math.floor(Math.random() * (data.length - slice_size))
 		slice_size = Math.floor(Math.random() * (80)) + 5
 	}
-async	function fetchNewChart(csvName){
+	async function fetchNewChart(csvName: string){
 		console.log("Fetching new chart data...")
-		const freshData =
+			const freshData =
 			await fetch(`/data/${csvName}.csv`).then(r => r.text())
 			.then(data => {
-				return data.split("\n")
+					return data.split("\n")
 					.slice(1)
 					.map(row => {
-						const [date, open, high, low, close, volume] = row.split(',')
-						return {date, close}
+							const [date, open, high, low, close, volume] = row.split(',')
+							return {date, close}
+							})
 					})
-			})
-			.then(data => {
+		.then(data => {
 				randomSlice(data)
 				searchData = data
-			})
+				})
 
 		console.log("New chart data fetched!")
-		console.log(freshData)
+			console.log(freshData)
 	}
 
 	// Avoid eager fetch
@@ -122,7 +123,11 @@ async	function fetchNewChart(csvName){
 		}
 	}
 	const update_pause = 100
-	let update_timeout = null
+	let	update_timeout = setTimeout(() => {
+			// console.log("Updating chart...")
+			chartData.labels = Array(slice_size).fill('')
+			chartData.datasets[0].data = searchData.map(p => p.close).slice(slice_start, slice_start+ slice_size)
+		}, 0)
 	// Update Data slice
 	$: {
 		// console.log("New chart slice requested...")
@@ -130,7 +135,7 @@ async	function fetchNewChart(csvName){
 		update_timeout = setTimeout(() => {
 			// console.log("Updating chart...")
 			chartData.labels = Array(slice_size).fill('')
-			chartData.datasets[0].data = searchData.map(p=> p.close).slice(slice_start, slice_start+ slice_size)
+			chartData.datasets[0].data = searchData.map(p => p.close).slice(slice_start, slice_start+ slice_size)
 		}, update_pause)
 	}
 
@@ -139,17 +144,17 @@ async	function fetchNewChart(csvName){
 	// This corresponds to the chip list
 	let searchWithinInput = ""
 
-	function onSearchFromSelect(event){
+	function onSearchFromSelect(event: any): void{
 		$searchSettings.searchFrom = event.detail.value
 		searchFrom = event.detail.value
 	}
 
-	function onSearchWithinChipSelect(event){
+	function onSearchWithinChipSelect(event: any): void{
 		searchWithinChipList = [...searchWithinChipList, event.detail.value]
 		searchWithinInput = ""
 	}
 
-	const searchFromOptions = [
+	const searchFromOptions: AutocompleteOption[] = [
 		{label: "SPY - S&P 500 Index", value: "SPY", keywords: 'spy, sp500, s&p500 spx'},
 		{label: "QQQ - Dow Jones Index", value: "QQQ", keywords: 'qqq, nasdaq, nasdaq100'},
 		{label: "AAPL - Apple", value: "AAPL", keywords: 'aapl, apple, iphone, macbook, mac'},
@@ -161,22 +166,20 @@ async	function fetchNewChart(csvName){
 
 	let searchWithinChipList = ["SPY"]
 	$: $searchSettings.searchIn = searchWithinChipList
-	const searchWithinOptions = searchFromOptions.map(o => o.value)
+	const searchInWhitelist: string[] = searchFromOptions.map(o => o.value)
 
 
 	let searchInParam = searchSettings.searchIn
-	// console.log("Search In Param: " + searchInParam)
-	// TODO: Reformat by wrapping Line in div
 </script>
 
 
-<div class="container mx-auto lg:py-8 lg:flex lg:gap-4">
-	<div class='h-full lg:w-3/4 border rounded border-primary-500 bg-surface-900/50'>
+<div class="mx-auto lg:p-8 lg:flex lg:gap-4">
+	<div class='min-h-full lg:w-3/4 lg:border rounded lg:border-primary-500 bg-surface-900/50 grid content-center'>
 		<Line data={chartData} {options} class='min-h-0 min-w-0' />
 	</div>
 	<!--Settings-->
-	<div class="bg-surface-900 border border-primary-400 w-full xl:rounded p-8 flex-1
-                flex flex-col gap-4 max-h-full">
+	<div class="bg-surface-900 lg:border border-primary-400 w-full xl:rounded p-4 lg:p-8 flex-1
+                flex flex-col gap-4 min-h-full">
 		<h2 class="text-primary-400 mb-2">Settings</h2>
 		<div class='mb-2'> <!--FROM Chart Select-->
 			<h4 class='mb-0.5'>Compare From:</h4>
@@ -210,7 +213,7 @@ async	function fetchNewChart(csvName){
 			<InputChip name="SearchWithin"
 								 bind:input={searchWithinInput}
 								 bind:value={searchWithinChipList}
-								 whitelist={searchFromOptions}
+								 whitelist={searchInWhitelist}
 								 minlength={1}
 								 allowUpperCase />
 			<div class='card w-full max-h-40 overflow-y-auto'>
@@ -221,10 +224,10 @@ async	function fetchNewChart(csvName){
 			</div>
 		</div>
 		<a href="/results?
-		start={$searchSettings.start}
-		&duration={$searchSettings.duration}
-		&from={$searchSettings.searchFrom}
-		&in={$searchSettings.searchIn.join('&in=')}" class="justify-self-center">
+			start={$searchSettings.start}
+			&duration={$searchSettings.duration}
+			&from={$searchSettings.searchFrom}
+			&in={$searchSettings.searchIn.join('&in=')}" class="justify-self-center">
 			<button class="btn variant-filled-primary font-bold my-4">Search</button>
 		</a>
 	</div>
