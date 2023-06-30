@@ -98,4 +98,4 @@
 		}
 </script>
 
-<Line {data} {options}  />
+<Line {data} {options} class='min-h-0 min-w-0'  />

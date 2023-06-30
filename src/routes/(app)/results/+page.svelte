@@ -18,26 +18,24 @@ import ResultChart from "./ResultChart.svelte";
     const nextStock = () => {
         index = index === 2 ? 2 : index + 1
     }
+	// TODO: Redesign the viewing: 
+	// 			on hover highlight chart so we don't have to click buttons
+	//          click sends to yahoo stock chart of time period
+	//          consider trying to display overall future in the chart...
 </script>
 
-<div class='container mx-auto h-full py-8 lg:flex'>
+<div class='mx-auto lg:p-8 lg:flex lg:gap-4'>
     {#key index}
-        <div class='w-4/5 min-w-0 border rounded border-primary-500 bg-surface-900/50'>
+        <div class='min-h-full lg:w-3/4 lg:border rounded lg:border-primary-500 bg-surface-900/50 grid content-center'>
             <ResultChart {p} {q} {index} />
         </div>
     {/key}
-    <div class="bg-surface-900 border border-primary-400 w-1/4 xl:rounded p-8 xl:mx-4 flex-1
-                flex flex-col gap-4">
+    <div class="bg-surface-900 lg:border border-primary-400 w-full xl:rounded p-4 lg:p-8 flex-1
+                flex flex-col gap-4 min-h-full">
         {#if index === -1}
-        <h2 class="text-primary-400 mb-2">Results</h2>
+        <h3 class="">Matches for</h3>
+		<h2 class="text-primary-400 mb-2">{p.name} {month_names[p.date.getMonth()]} {p.date.getDate()}, {p.date.getFullYear()} ({p.data.length} days)</h2>
         <div class='card'>
-            <h3 class='card-header mb-2'>Search Info </h3>
-            <ul class='mx-4'>
-                <li>{p.name}</li>
-                <li>{month_names[p.date.getMonth()]} {p.date.getDate()}, {p.date.getFullYear()}</li>
-                <li>{p.data.length} days</li>
-            </ul>
-            <h4 class='card-header my-2'>Top Matches:</h4>
             <ul class='ml-4'>
                 {#each q as match}
                     <li><p>{match.name} - {month_names[match.date.getMonth()]} {match.date.getDate()}, {match.date.getFullYear()}</p></li>
