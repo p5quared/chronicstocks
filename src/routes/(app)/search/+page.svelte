@@ -173,13 +173,13 @@
 </script>
 
 
-<div class="mx-auto lg:p-8 lg:flex lg:gap-4">
+<div class="mx-auto lg:p-8 lg:flex lg:gap-4 lg:h-full">
 	<div class='min-h-full lg:w-3/4 lg:border rounded lg:border-primary-500 bg-surface-900/50 grid content-center'>
 		<Line data={chartData} {options} class='min-h-0 min-w-0' />
 	</div>
 	<!--Settings-->
 	<div class="bg-surface-900 lg:border border-primary-400 w-full xl:rounded p-4 lg:p-8 flex-1
-                flex flex-col gap-4 min-h-full">
+                flex flex-col gap-4 h-full">
 		<h2 class="text-primary-400 mb-2">Settings</h2>
 		<div class='mb-2'> <!--FROM Chart Select-->
 			<h4 class='mb-0.5'>Compare From:</h4>

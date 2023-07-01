@@ -12,54 +12,49 @@ import ResultChart from "./ResultChart.svelte";
     const month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-    const previousStock = () => {
-        index = index === 0 ? 0 : index - 1
-    }
-    const nextStock = () => {
-        index = index === 2 ? 2 : index + 1
-    }
 	// TODO: Redesign the viewing: 
 	// 			on hover highlight chart so we don't have to click buttons
 	//          click sends to yahoo stock chart of time period
 	//          consider trying to display overall future in the chart...
 </script>
 
-<div class='mx-auto lg:p-8 lg:flex lg:gap-4'>
+<div class='mx-auto lg:p-8 lg:flex lg:gap-4 lg:h-full'>
     {#key index}
-        <div class='min-h-full lg:w-3/4 lg:border rounded lg:border-primary-500 bg-surface-900/50 grid content-center'>
+        <div class='min-h-full w-full lg:border rounded lg:border-primary-500 bg-surface-900/50 grid content-center'>
             <ResultChart {p} {q} {index} />
         </div>
     {/key}
-    <div class="bg-surface-900 lg:border border-primary-400 w-full xl:rounded p-4 lg:p-8 flex-1
-                flex flex-col gap-4 min-h-full">
-        {#if index === -1}
-        <h3 class="">Matches for</h3>
-		<h2 class="text-primary-400 mb-2">{p.name} {month_names[p.date.getMonth()]} {p.date.getDate()}, {p.date.getFullYear()} ({p.data.length} days)</h2>
-        <div class='card'>
-            <ul class='ml-4'>
-                {#each q as match}
-                    <li><p>{match.name} - {month_names[match.date.getMonth()]} {match.date.getDate()}, {match.date.getFullYear()}</p></li>
-                {/each}
-            </ul>
+    <div class="bg-surface-900 lg:border border-primary-400 xl:rounded p-4 lg:p-8 flex-1
+                flex flex-col gap-4 min-w-fit">
+        <h3>Closest matches found for</h3>
+		<div class="text-primary-400 mb-2 break-words">
+			<h2>{p.name} {month_names[p.date.getMonth()]} {p.date.getDate()}, {p.date.getFullYear()}</h2>
+			<h2 class="italic">({p.data.length} days):</h2>
+		</div>
+        <div class='table-container w-full lg:max-h-96 lg:overflow-y-auto'>
+			<table class='table table-hover table-comfortable'>
+			<thead>
+				<tr>
+					<th>Stock</th>
+					<th>Date</th>
+					<th>Trend*</th>
+					<th>Detail</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each q as row, i}
+					<tr on:mouseenter={() => index = i}>
+						<td>{row.name}</td>
+						<td>{month_names[row.date.getMonth()]} {row.date.getDate()}, {row.date.getFullYear()}</td>
+						<td>Up</td>
+						<td><a href="http://finance.yahoo.com/chart/{row.name}" target="_blank">Full Chart</a></td>
+					</tr>
+				{/each}
+			</tbody>
+			</table>
         </div>
-            {:else}
-                {#key index}
-                    <div class='card'>
-                        <div class='card-header'>{q[index].name}: {month_names[q[index].date.getMonth()]} {q[index].date.getDate()}, {q[index].date.getFullYear()}</div>
-                    </div>
-                {/key}
-            {/if}
-        {#if index === -1}
-            <button class="btn variant-filled-primary" on:click={() => index = 1}>View Details</button>
-        {:else}
-            <div class='flex'>
-            <button class='btn variant-ghost-error w-1/2' on:click={previousStock}>Previous</button>
-            <button class='btn variant-ghost-primary w-1/2' on:click={nextStock}>Next</button>
-            </div>
-        {/if}
-        <a class='self-center'
-          href="/search">
-            <button class="btn variant-filled-secondary">New Search</button>
-        </a>
+		<p class='italic mt-2 ml-1'>(Hover or press a row to highlight data)</p>
+		<p class='italic ml-1'>*Approximate trend of stock <span class='font-bold'>following</span> the given period.</p>
+        <a class='btn variant-filled-secondary font-bold' href="/search">New Search</a>
     </div>
 </div>
