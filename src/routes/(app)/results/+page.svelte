@@ -11,11 +11,6 @@ import ResultChart from "./ResultChart.svelte";
 
     const month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-	// TODO: Redesign the viewing: 
-	// 			on hover highlight chart so we don't have to click buttons
-	//          click sends to yahoo stock chart of time period
-	//          consider trying to display overall future in the chart...
 </script>
 
 <div class='mx-auto lg:p-8 lg:flex lg:gap-4 lg:h-full'>

@@ -1,5 +1,4 @@
 <script>
-    // TODO: Add URLS to each line or use drawers
     // TODO: Animate Chart Drawing
     export let p;
     export let q;
@@ -44,7 +43,6 @@
                 tension: 0
             }
         ]
-    // TODO: Dynamic coloring so we don't have to forceOverride
     for(let i=0; i<q.length; i++){
         chartData.push({
             label: q[i].name + " " + q[i].date.toDateString(),

@@ -2,7 +2,6 @@
 	import type { PageData } from '../$types.js';
 	// TODO: Since the state is now in the store, we should be able to refactor out the settings from the chart
 	// AND try to use just the store, no need for in between variables
-	// TODO: Figure out better way to store search data options
 	import { searchSettings } from 'lib/stores.js';
 	import { Autocomplete, InputChip, RangeSlider, type AutocompleteOption } from '@skeletonlabs/skeleton';
 
