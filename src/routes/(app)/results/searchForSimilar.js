@@ -14,7 +14,6 @@ searchData = {
       data: target_period}
 
     let periods_scored = []
-    // TODO: This is kinda ugly
     for(let i=0; i < q.length; i++){
         let close_periods
         if(q[i].name === p.name){
