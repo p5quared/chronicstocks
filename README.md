@@ -2,7 +2,7 @@
 A site about stocks.
 
 ## How it works
-### \*TBD\*
+#### \*TBD\*
 
 ## How it's made
 This site was built with [Svelte/Sveltekit](https://svelte.dev) and [Skeleton](https://skeleton.dev) and hosted via [Vercel](https://vercel.com).

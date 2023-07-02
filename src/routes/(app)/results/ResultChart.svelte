@@ -48,7 +48,7 @@
             label: q[i].name + " " + q[i].date.toDateString(),
             data: q[i].data,
             fill: false,
-            borderWidth: 3,
+            borderWidth: 2,
             pointStyle: false,
 			borderColor: 'gray',
             borderDash: [9, 3],
@@ -58,6 +58,8 @@
 
 		if(index !== -1){
 			chartData[index + 1].borderColor = '#FF0000'
+			chartData[index + 1].borderDash = []
+			chartData[index + 1].borderWidth = 4
 		}
 
 
