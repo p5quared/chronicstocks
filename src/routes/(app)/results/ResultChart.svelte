@@ -50,7 +50,7 @@
             fill: false,
             borderWidth: 3,
             pointStyle: false,
-					borderColor: 'gray',
+			borderColor: 'gray',
             borderDash: [9, 3],
             tension: 0
         })

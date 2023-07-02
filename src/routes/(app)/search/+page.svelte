@@ -97,8 +97,9 @@
 		datasets: [
 			{
 				label: 'SPY',
-				fill: true,
+				fill: false,
 				pointStyle: false,
+				borderWidth: 4,
 				borderColor: '#0FBA81',
 				tension: 0,
 				data: searchData.map(p => p.close).slice(slice_start, slice_start+ slice_size),
@@ -107,17 +108,24 @@
 	};
 
 	const options = {
+		spanGaps: false,
 		responsive: true,
 		scales: {
 			x: {
 				grid: {
 					display: false,
-				}
+				},
+				ticks: {
+					display: false,
+				},
 			},
 			y: {
 				grid: {
 					display: false
-				}
+				},
+				ticks: {
+					display: false,
+				},
 			},
 		}
 	}
@@ -199,7 +207,7 @@
 									 step={10} />
 		</div>
 		<div class="inline">
-			<h4>Duration:</h4>
+			<h4>Duration (days):</h4>
 			<input class="input w-4rem" type="number" bind:value={slice_size} />
 			<RangeSlider name="PeriodSize"
 									 bind:value={slice_size}

@@ -14,19 +14,24 @@ interface SearchData {
 	q: Period[];
 }
 export function searchForSimilar(searchData: SearchData, start: number, duration: number){
-    /*
-searchData = {
-    p: {name: "stock", data: [{date, c1}, ...]},
-    q: [{name: "stock", data: [{date, c1, ...]}, {name: "stock", data: [{date, c1} ...]}, ...]
-     */
     // Get the target period, and comparable periods of equal duration, and normalize n/sum
+	const start_time = new Date().getTime()
     const {p, q} = searchData
     const target_slice = p.data.slice(start, start + duration)
+	const target_slice_following = p.data.slice(start + duration, start + duration * 2)
+	let p_trend = 0
+	if(target_slice_following.length === duration){
+		p_trend = trend(target_slice_following.map((value) => value.close))
+	}
     const target_period = target_slice.map((value) => value.close / target_slice.reduce((a, b) => a + b.close, 0))
-    const target_p_returnable = {name: p.name,
-      date: p.data[0].date,
-      data: target_period}
+    const target_p_returnable = {
+		name: p.name,
+		date: p.data[0].date,
+		data: target_period,
+		trend: p_trend
+	}
 
+	let periods_measured = 0
     const periods_scored = []
     for(let i=0; i < q.length; i++){
         let close_periods
@@ -35,7 +40,6 @@ searchData = {
             const after = chunkify(p.data.slice(start + duration), duration)
 
             let combined = before.concat(after)
-            // console.log("COMBINED", combined)
             combined = combined.map((period) => {
                 return period.map((value) => (value.close / period.reduce((a, b) => a + b.close, 0)))
             })
@@ -47,23 +51,28 @@ searchData = {
                 return period.map((value) => (value / period.reduce((a, b) => a + b, 0)))
             })
         }
+		for(let j=0; j < close_periods.length; j++){
+			periods_measured += 1
+			periods_scored.push({
+				name: q[i].name,
+				date: q[i].data[duration * j].date,
+				score: kl_divergence(target_period, close_periods[j]),
+				data: close_periods[j],
+				trend: j < (close_periods.length - 1) ? trend(close_periods[j+1]) : 0
+			})
+		}
+	}
 
-            for(let j=0; j < close_periods.length; j++){
-                periods_scored.push({
-                    name: q[i].name,
-                    date: q[i].data[duration * j].date,
-                    score: kl_divergence(target_period, close_periods[j]),
-                    data: close_periods[j]
-                })
-            }
-        }
 
-
-    // {score: n, data: [n1, n2, n3, ...]}
     const compared = periods_scored.sort((a, b) => a.score - b.score)
-    console.log(compared[0])
-    return {p: target_p_returnable,
-        q: compared.slice(0,10)}
+	const total_trend = compared.slice(0,5).reduce((a, b) => a + b.trend, 0) 
+    return {
+		p: target_p_returnable,
+        q: compared.slice(0,10),
+		avg_trend: Math.round(total_trend / 5 * 100) / 100,
+		periods_measured: periods_measured,
+		time: new Date().getTime() - start_time
+	}
 }
 
 function chunkify(data: Tick[], chunkSize: number){
@@ -83,4 +92,11 @@ function kl_divergence(p: number[], q: number[]){
         divergence += p[i] * Math.log(p[i] / q[i])
     }
     return divergence * 10000
+}
+
+// Trend Percentage = ((Current Period Value - Base Period Value) / Base Period Value) * 100
+function trend(data: number[]){
+	const base = data[0]
+	const current = data[data.length - 1]
+	return Math.round( ((current - base) / base) * 10000) / 100
 }
